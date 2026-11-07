@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>بازیابی رمز حقیار</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+<h2>بازیابی رمز عبور حقیار</h2>
+<p id="status">در حال بررسی لینک...</p>
+<input id="password" type="password" placeholder="رمز جدید">
+<button id="save">ثبت رمز جدید</button>
+<script>
+const client = supabase.createClient(
+'https://yiyhitjodnmmttnzimdg.supabase.co',
+'sb_publishable_wPXu7QgVd-qPkAay1hpEhg_7Lnna7sJ'
+);
+async function checkLink() {
+const {data,error}=await client.auth.getSession();
+document.getElementById('status').textContent =
+error ? error.message :
+data.session ? 'لینک معتبر است. رمز جدید را وارد کن.' :
+'لینک بازیابی معتبر نیست یا منقضی شده است.';
+}
+checkLink();
+document.getElementById('save').onclick=async()=>{
+const password=document.getElementById('password').value;
+if(password.length<8){alert('رمز باید حداقل ۸ حرف باشد');return;}
+const {error}=await client.auth.updateUser({password});
+document.getElementById('status').textContent=
+error ? error.message : 'رمز با موفقیت تغییر کرد.';
+};
+</script>
+</body>
+</html>
